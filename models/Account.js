@@ -1,12 +1,4 @@
-/* IMPORTS/REQUIRES */
-const express = require('express');
 const mongoose = require('mongoose');
-const logger = require('morgan');
-const errorhandler = require('errorhandler');
-const bodyParser = require('body-parser');
-/* IMPORTS/REQUIRES */
-
-let app = express(); // <--- Express() Launch!
 
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 const { Schema } = mongoose;
@@ -18,16 +10,7 @@ const AccountSchema = new Schema({
 
 let Account = mongoose.model('Account', AccountSchema);
 
-/* MIDDLEWARE */
-app.use(bodyParser.json());
-app.use(logger('dev'));
-app.use(errorhandler());
-/* MIDDLEWARE */
-
-/* *********** */
-/* PAGE ROUTES */
-/* *********** */
-app.get('/accounts', (req, res) => {
+Account.getAllAccounts = function (req, res) {
     Account.find({}, function (err, data) {
         if (err) return console.error('No se pudo Obtener todas las cuentas.');
 
@@ -35,9 +18,9 @@ app.get('/accounts', (req, res) => {
             accounts: data
         })
     });
-});
+}
 
-app.post('/accounts', (req, res) => {
+Account.createAccount = function (req, res) {
     let account = new Account({ name: req.body.name, balance: req.body.balance });
 
     account.save(function (err, data) {
@@ -47,9 +30,9 @@ app.post('/accounts', (req, res) => {
             account: data
         })
     });
-});
+}
 
-app.get('/account/:id', (req, res) => {
+Account.showOneAccount = function (id, req, res) {
     Account.findById({ id }, function (err, data) {
         if (err) return console.error('No se pudo Obtener la cuenta: ' + id);
 
@@ -57,9 +40,9 @@ app.get('/account/:id', (req, res) => {
             account: data
         })
     });
-});
+}
 
-app.put('/accounts/:id', (req, res) => {
+Account.updateAccount = function (id, req, res) {
     Account.findByIdAndUpdate({ id }, { name: req.body.name, balance: req.body.balance }, { new: true }, function (err, data) {
         if (err) return console.error('No se pudo Actualizar la cuenta: ' + id);
 
@@ -67,9 +50,9 @@ app.put('/accounts/:id', (req, res) => {
             account: data
         })
     });
-});
+}
 
-app.delete('/accounts/:id', (req, res) => {
+Account.deleteAccount = function (id, req, res) {
     Account.findByIdAndRemove({ id }, function (err, data) {
         if (err) return console.error('No se pudo Eliminar la cuenta: ' + id);
 
@@ -77,12 +60,6 @@ app.delete('/accounts/:id', (req, res) => {
             account: data
         })
     });
-});
+}
 
-
-/* *********** */
-/* LISTEN PORT */
-/* *********** */
-
-app.listen(3000);
-console.log("I'm Up!");
+module.exports = Bicycle;
