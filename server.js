@@ -1,4 +1,5 @@
 /* IMPORTS/REQUIRES */
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const logger = require('morgan');
@@ -50,7 +51,9 @@ app.post('/accounts', (req, res) => {
 });
 
 app.get('/account/:id', (req, res) => {
-    Account.findById({ id }, function (err, data) {
+    const id = req.params.id;
+
+    Account.findById({ _id: id }, function (err, data) {
         if (err) return console.error('No se pudo Obtener la cuenta: ' + id);
 
         res.status(200).json({
@@ -60,7 +63,9 @@ app.get('/account/:id', (req, res) => {
 });
 
 app.put('/accounts/:id', (req, res) => {
-    Account.findByIdAndUpdate({ id }, { name: req.body.name, balance: req.body.balance }, { new: true }, function (err, data) {
+    const id = req.params.id;
+
+    Account.findByIdAndUpdate({ _id: id }, { name: req.body.name, balance: req.body.balance }, { new: true }, function (err, data) {
         if (err) return console.error('No se pudo Actualizar la cuenta: ' + id);
 
         res.status(200).json({
@@ -70,7 +75,9 @@ app.put('/accounts/:id', (req, res) => {
 });
 
 app.delete('/accounts/:id', (req, res) => {
-    Account.findByIdAndRemove({ id }, function (err, data) {
+    const id = req.params.id;
+
+    Account.findByIdAndRemove({ _id: id }, function (err, data) {
         if (err) return console.error('No se pudo Eliminar la cuenta: ' + id);
 
         res.status(204).json({
