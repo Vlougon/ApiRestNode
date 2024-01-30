@@ -30,7 +30,7 @@ app.use(errorhandler());
 /* *********** */
 app.get('/accounts', (req, res) => {
     Account.find({}, function (err, data) {
-        if (err) return console.error('No se pudo Obtener todas las cuentas.');
+        if (err) return res.status(404);
 
         res.status(200).json({
             accounts: data
@@ -42,7 +42,7 @@ app.post('/accounts', (req, res) => {
     let account = new Account({ name: req.body.name, balance: req.body.balance });
 
     account.save(function (err, data) {
-        if (err) return console.error('No se pudo Crear la cuenta nueva.');
+        if (err) return res.status(422);
 
         res.status(201).json({
             account: data
@@ -54,7 +54,7 @@ app.get('/account/:id', (req, res) => {
     const id = req.params.id;
 
     Account.findById({ _id: id }, function (err, data) {
-        if (err) return console.error('No se pudo Obtener la cuenta: ' + id);
+        if (err) return res.status(404);
 
         res.status(200).json({
             account: data
@@ -66,7 +66,7 @@ app.put('/accounts/:id', (req, res) => {
     const id = req.params.id;
 
     Account.findByIdAndUpdate({ _id: id }, { name: req.body.name, balance: req.body.balance }, { new: true }, function (err, data) {
-        if (err) return console.error('No se pudo Actualizar la cuenta: ' + id);
+        if (err) return res.status(422);
 
         res.status(200).json({
             account: data
@@ -78,7 +78,7 @@ app.delete('/accounts/:id', (req, res) => {
     const id = req.params.id;
 
     Account.findByIdAndRemove({ _id: id }, function (err, data) {
-        if (err) return console.error('No se pudo Eliminar la cuenta: ' + id);
+        if (err) return res.status(422);
 
         res.status(204).json({
             account: data
